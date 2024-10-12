@@ -25,8 +25,7 @@ import { Comment } from './comment/entities/comment.entity';
       password: '',
       database: 'nest_graphQl',
       entities: [User, Post, Comment],
-      synchronize: false,
-      autoLoadEntities:false
+      synchronize: true,
     }),
     CommentModule,
   ],
