@@ -14,11 +14,17 @@ export class Comment {
   @Field(() => String)
   text: string;
 
-  @ManyToOne((type) => User, (user) => user.comments)
+  @ManyToOne((type) => User, (user) => user.comments, {
+    onDelete:"CASCADE",
+    onUpdate:"CASCADE"
+  })
   @Field(() => User, { nullable: true })
   user: User;
 
-  @ManyToOne((type) => Post, (post) => post.comments)
+  @ManyToOne((type) => Post, (post) => post.comments, {
+    onDelete:"CASCADE",
+    onUpdate:"CASCADE"
+  })
   @Field(() => Post, { nullable: true })
   post: Post;
 }

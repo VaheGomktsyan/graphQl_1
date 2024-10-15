@@ -3,33 +3,95 @@ import { PostService } from './post.service';
 import { Post } from './entities/post.entity';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
+import { HttpStatus, NotFoundException, Res } from '@nestjs/common';
+import { Response } from 'express';
 
 @Resolver(() => Post)
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
 
   @Mutation(() => Post)
-  createPost(@Args('createPostInput') createPostInput: CreatePostInput) {
-    return this.postService.create(createPostInput);
+  async createPost(
+    @Args('createPostInput') createPostInput: CreatePostInput,
+    @Res() res: Response,
+  ) {
+    
+    try {
+      const data = await this.postService.create(createPostInput);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;    
+    } catch (error) {
+        console.error('Error fetching entity:', error);
+        throw error; 
+    }
   }
 
-  @Query(() => [Post], { name: 'post' })
-  findAll() {
-    return this.postService.findAll();
+  @Query(() => [Post], { name: 'posts' })
+  async findAll(@Res() res: Response) {
+
+    try {
+      const data = await this.postService.findAll();
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;    
+    } catch (error) {
+        console.error('Error fetching entity:', error);
+        throw error; 
+    }
   }
 
   @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.postService.findOne(id);
+  async findOne(
+    @Args('id', { type: () => Int }) id: number,
+    @Res() res: Response,
+  ) {
+
+    try {
+      const data = await this.postService.findOne(id);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;    
+    } catch (error) {
+        console.error('Error fetching entity:', error);
+        throw error; 
+    }
   }
 
   @Mutation(() => Post)
-  updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
-    return this.postService.update(updatePostInput.id, updatePostInput);
+  async updatePost(
+    @Args('updatePostInput') updatePostInput: UpdatePostInput,
+    @Res() res: Response,
+  ) {
+    try {
+      const data = await this.postService.update(updatePostInput.id, updatePostInput);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;    
+    } catch (error) {
+        console.error('Error fetching entity:', error);
+        throw error; 
+    }
   }
 
   @Mutation(() => Post)
-  removePost(@Args('id', { type: () => Int }) id: number) {
-    return this.postService.remove(id);
+  async removePost(
+    @Args('id', { type: () => Int }) id: number,
+    @Res() res: Response,
+  ) {
+    try {
+      const data = await this.postService.remove(id);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;    
+    } catch (error) {
+        console.error('Error fetching entity:', error);
+        throw error; 
+    }
   }
 }

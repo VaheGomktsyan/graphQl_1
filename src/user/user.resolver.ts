@@ -3,33 +3,82 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { HttpStatus, NotFoundException, Res } from '@nestjs/common';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
+  async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+    try {
+      const data = await this.userService.create(createUserInput);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;
+    } catch (error) {
+      console.error('Error fetching entity:', error);
+      throw error;
+    }
   }
 
   @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    try {
+      const data = await this.userService.findAll();
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;
+    } catch (error) {
+      console.error('Error fetching entity:', error);
+      throw error;
+    }
   }
 
   @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
+  async findOne(@Args('id', { type: () => Int }) id: number) {
+    try {
+      const data = await this.userService.findOne(id);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;
+    } catch (error) {
+      console.error('Error fetching entity:', error);
+      throw error;
+    }
+  }
+
+  @Mutation(() => User, {name:"updateUserInpukkkkkkkk"})
+  async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
+    try {
+      const data = await this.userService.update(
+        updateUserInput.id,
+        updateUserInput,
+      );
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;
+    } catch (error) {
+      console.error('Error fetching entity:', error);
+      throw error;
+    }
   }
 
   @Mutation(() => User)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.userService.update(updateUserInput.id, updateUserInput);
-  }
-
-  @Mutation(() => User)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.remove(id);
+  async removeUser(@Args('id', { type: () => Int }) id: number) {
+    try {
+      const data = await this.userService.remove(id);
+      if (!data) {
+        throw new NotFoundException(`Entity with id $`);
+      }
+      return data;
+    } catch (error) {
+      console.error('Error fetching entity:', error);
+      throw error;
+    }
   }
 }

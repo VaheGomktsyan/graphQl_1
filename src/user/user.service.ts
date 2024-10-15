@@ -13,29 +13,14 @@ export class UserService {
     return await this.usRep.save({ name, surname, email });
   }
 
-  findAll() {
-    return [
-      {
-        id: 1,
-        name: 'Anna',
-        surname: 'Anyan',
-      },
-      {
-        id: 2,
-        name: 'Anna2',
-        surname: 'Anyan2',
-      },
-      {
-        id: 3,
-        name: 'Anna3',
-        surname: 'Anyan3',
-      },
-      {
-        id: 4,
-        name: 'Anna4',
-        surname: 'Anya4',
-      },
-    ];
+  async findAll() {
+    return await this.usRep.find({
+      relations:{
+        posts:{
+          comments:{user:true}
+        }
+      }
+    })
   }
 
   async findOne(id: number) {
@@ -59,7 +44,7 @@ export class UserService {
       await this.usRep.delete(id);
       return data;
     } else {
-      return { message: 'user not found ' };
+      return { name: 'user not found ' };
     }
   }
 }
